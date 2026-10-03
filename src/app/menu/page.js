@@ -186,6 +186,38 @@ function MenuContent() {
     return Number((subtotal + taxAmount).toFixed(2));
   }, [subtotal, taxAmount]);
 
+  // Smart "Frequently Paired With" Upsell Recommendations
+  const pairedRecommendations = useMemo(() => {
+    if (cart.length === 0 || menuItems.length === 0) return [];
+
+    const cartItemIds = new Set(cart.map((i) => i._id));
+    const cartCategories = new Set(
+      cart.map((i) => (typeof i.categoryId === 'object' ? i.categoryId?._id : i.categoryId))
+    );
+
+    // Prioritize Breads, Drinks, Desserts, and Bestsellers that aren't in the cart
+    const candidates = menuItems.filter((item) => {
+      if (cartItemIds.has(item._id) || !item.isAvailable) return false;
+      return true;
+    });
+
+    // Score candidates based on complementary categories
+    const scored = candidates.map((item) => {
+      let score = 0;
+      const catSlug = categories.find((c) => c._id === item.categoryId || c.slug === item.categoryId)?.slug || '';
+
+      if (catSlug === 'breads' || item.name.toLowerCase().includes('naan')) score += 5;
+      if (catSlug === 'drinks' || item.name.toLowerCase().includes('lassi')) score += 4;
+      if (catSlug === 'desserts' || item.name.toLowerCase().includes('jamun')) score += 4;
+      if (item.isBestseller) score += 3;
+
+      return { item, score };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+    return scored.slice(0, 3).map((s) => s.item);
+  }, [cart, menuItems, categories]);
+
   // Filtered Menu Items
   const filteredItems = useMemo(() => {
     return menuItems.filter((item) => {
@@ -1062,6 +1094,100 @@ function MenuContent() {
                           </div>
                         </div>
                       ))}
+                    </div>
+                  )}
+
+                  {/* Frequently Paired With Upselling Section */}
+                  {cart.length > 0 && pairedRecommendations.length > 0 && (
+                    <div
+                      style={{
+                        marginTop: '1.25rem',
+                        backgroundColor: '#fff7ed',
+                        borderRadius: '16px',
+                        border: '1px solid #fed7aa',
+                        padding: '0.85rem 1rem',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.2rem' }}>
+                        <Flame size={16} color="#ea580c" />
+                        <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#9a3412' }}>
+                          Frequently Paired With Your Order
+                        </span>
+                      </div>
+                      <p style={{ fontSize: '0.72rem', color: '#c2410c', marginBottom: '0.75rem' }}>
+                        Complete your meal with these chef-recommended accompaniments:
+                      </p>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        {pairedRecommendations.map((rec) => (
+                          <div
+                            key={rec._id}
+                            style={{
+                              backgroundColor: '#ffffff',
+                              borderRadius: '12px',
+                              border: '1px solid #ffedd5',
+                              padding: '0.55rem 0.75rem',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              gap: '0.6rem',
+                              boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flex: 1, minWidth: 0 }}>
+                              {rec.image && (
+                                <img
+                                  src={rec.image}
+                                  alt={rec.name}
+                                  style={{ width: '42px', height: '42px', borderRadius: '8px', objectFit: 'cover', flexShrink: 0 }}
+                                />
+                              )}
+                              <div style={{ overflow: 'hidden' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                                  <span className={rec.foodType === 'veg' ? 'diet-badge-veg' : 'diet-badge-nonveg'} />
+                                  <span
+                                    style={{
+                                      fontSize: '0.82rem',
+                                      fontWeight: 700,
+                                      color: '#0f172a',
+                                      whiteSpace: 'nowrap',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                    }}
+                                  >
+                                    {rec.name}
+                                  </span>
+                                </div>
+                                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#ea580c' }}>
+                                  {formatCurrency(rec.price)}
+                                </span>
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={() => addToCart(rec, '')}
+                              style={{
+                                padding: '0.35rem 0.75rem',
+                                borderRadius: '8px',
+                                backgroundColor: '#ea580c',
+                                color: '#ffffff',
+                                fontSize: '0.75rem',
+                                fontWeight: 800,
+                                border: 'none',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.25rem',
+                                whiteSpace: 'nowrap',
+                                boxShadow: '0 2px 4px rgba(234, 88, 12, 0.25)',
+                              }}
+                            >
+                              <Plus size={13} />
+                              <span>Add</span>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
 

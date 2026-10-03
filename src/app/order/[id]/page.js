@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import confetti from 'canvas-confetti';
 import {
   CheckCircle2,
   Clock,
@@ -17,6 +18,13 @@ import {
   PhoneCall,
   Printer,
   Sparkles,
+  Star,
+  Copy,
+  Check,
+  ExternalLink,
+  MessageSquare,
+  AlertTriangle,
+  Heart,
 } from 'lucide-react';
 import { formatCurrency, formatDate, formatTime } from '@/lib/format';
 
@@ -30,6 +38,15 @@ export default function OrderTrackingPage() {
   const [error, setError] = useState('');
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
   const [waiterCalled, setWaiterCalled] = useState(false);
+
+  // Post-meal Feedback & Review Booster state
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [copiedReview, setCopiedReview] = useState(false);
+  const [submittingFeedback, setSubmittingFeedback] = useState(false);
 
   // Fetch single order details
   const fetchOrder = async (showLoading = false) => {
@@ -92,6 +109,101 @@ export default function OrderTrackingPage() {
     setTimeout(() => {
       setWaiterCalled(false);
     }, 4000);
+  };
+
+  const handleRate = async (stars) => {
+    setRating(stars);
+    if (stars >= 4) {
+      try {
+        confetti({
+          particleCount: 60,
+          spread: 60,
+          origin: { y: 0.7 },
+        });
+      } catch (e) {}
+
+      // Prepopulate compliment if empty
+      if (!feedbackText) {
+        const dishName = order?.items?.[0]?.name ? `${order.items[0].name}` : 'food';
+        setFeedbackText(`Had a fantastic dining experience at Table #${order?.tableNumber}! The ${dishName} was absolutely delicious, fast service, and great ambience. Highly recommended! ⭐⭐⭐⭐⭐`);
+      }
+    }
+
+    // Auto log rating to backend
+    try {
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: order?._id || id,
+          tableNumber: order?.tableNumber,
+          customerName: order?.customerName,
+          rating: stars,
+          tags: selectedTags,
+          comment: feedbackText,
+        }),
+      });
+    } catch (e) {}
+  };
+
+  const toggleTag = (tag) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
+
+  const handleCopyAndOpenGoogleReview = async () => {
+    const textToCopy = feedbackText || `Loved dining at Saffron & Spice Bistro! Delicious food and top-notch service at Table #${order?.tableNumber}. ⭐⭐⭐⭐⭐`;
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      await navigator.clipboard.writeText(textToCopy);
+      setCopiedReview(true);
+      setTimeout(() => setCopiedReview(false), 4000);
+    }
+
+    // Save final compliment to DB
+    try {
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: order?._id || id,
+          tableNumber: order?.tableNumber,
+          customerName: order?.customerName,
+          rating: rating || 5,
+          tags: selectedTags,
+          comment: textToCopy,
+        }),
+      });
+    } catch (e) {}
+
+    // Open Google Maps search/reviews for restaurant
+    window.open(`https://www.google.com/maps/search/?api=1&query=Saffron+and+Spice+Bistro`, '_blank');
+  };
+
+  const handleSubmitPrivateFeedback = async (e) => {
+    e.preventDefault();
+    if (!feedbackText.trim()) return;
+
+    try {
+      setSubmittingFeedback(true);
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: order?._id || id,
+          tableNumber: order?.tableNumber,
+          customerName: order?.customerName,
+          rating: rating || 2,
+          tags: selectedTags,
+          comment: feedbackText.trim(),
+        }),
+      });
+      setFeedbackSubmitted(true);
+    } catch (err) {
+      console.error('Failed to submit feedback:', err);
+    } finally {
+      setSubmittingFeedback(false);
+    }
   };
 
   if (loading) {
@@ -503,6 +615,270 @@ export default function OrderTrackingPage() {
           >
             {order.paymentStatus === 'paid' ? 'PAID ✓' : 'PENDING'}
           </span>
+        </div>
+
+        {/* 🌟 Post-Meal Feedback & Google Reviews Booster Card */}
+        <div
+          style={{
+            marginTop: '1.25rem',
+            backgroundColor: '#ffffff',
+            borderRadius: '20px',
+            border: '1px solid #e2e8f0',
+            padding: '1.5rem',
+            boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)',
+            textAlign: 'center',
+          }}
+        >
+          <div
+            style={{
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              backgroundColor: '#fff7ed',
+              color: '#ea580c',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 0.75rem',
+            }}
+          >
+            <Sparkles size={22} />
+          </div>
+
+          <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.25rem' }}>
+            How was your meal today?
+          </h3>
+          <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '1.25rem' }}>
+            Tap the stars to rate your dining experience at Table #{order.tableNumber}
+          </p>
+
+          {/* Interactive Star Rating Bar */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+            {[1, 2, 3, 4, 5].map((star) => {
+              const isFilled = (hoverRating || rating) >= star;
+              return (
+                <button
+                  key={star}
+                  onClick={() => handleRate(star)}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '0.25rem',
+                    transition: 'transform 0.15s ease',
+                    transform: (hoverRating || rating) >= star ? 'scale(1.2)' : 'scale(1)',
+                  }}
+                  title={`${star} Star`}
+                >
+                  <Star
+                    size={32}
+                    fill={isFilled ? '#eab308' : '#f1f5f9'}
+                    color={isFilled ? '#ca8a04' : '#cbd5e1'}
+                  />
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Rating Mood Label */}
+          {rating > 0 && (
+            <div
+              style={{
+                fontSize: '0.85rem',
+                fontWeight: 800,
+                color: rating >= 4 ? '#16a34a' : rating === 3 ? '#ca8a04' : '#dc2626',
+                marginBottom: '1rem',
+              }}
+            >
+              {rating === 5 && '🌟 Outstanding! Loved Everything!'}
+              {rating === 4 && '✨ Great & Delicious Food!'}
+              {rating === 3 && '😐 Average / Suggestions for Improvement'}
+              {rating <= 2 && '😞 Needs Attention / Disappointing'}
+            </div>
+          )}
+
+          {/* Tag Pills */}
+          {rating > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', justifyContent: 'center', marginBottom: '1.25rem' }}>
+              {[
+                '🥘 Delicious Food',
+                '⚡ Fast Service',
+                '✨ Great Ambience',
+                '👨‍🍳 Courteous Staff',
+                '💯 Great Value',
+              ].map((tag) => {
+                const isSelected = selectedTags.includes(tag);
+                return (
+                  <button
+                    key={tag}
+                    onClick={() => toggleTag(tag)}
+                    style={{
+                      padding: '0.35rem 0.75rem',
+                      borderRadius: '20px',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      backgroundColor: isSelected ? '#0f172a' : '#f8fafc',
+                      color: isSelected ? '#ffffff' : '#64748b',
+                      border: '1px solid',
+                      borderColor: isSelected ? '#0f172a' : '#e2e8f0',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    {tag}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* 🌟 4 & 5 Stars Flow: Google Reviews Booster */}
+          {rating >= 4 && (
+            <div
+              className="animate-fade-in"
+              style={{
+                backgroundColor: '#f0fdf4',
+                borderRadius: '16px',
+                border: '1px solid #bbf7d0',
+                padding: '1.25rem',
+                textAlign: 'left',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#166534', fontWeight: 800, fontSize: '0.9rem', marginBottom: '0.35rem' }}>
+                <Sparkles size={16} />
+                <span>Thank you so much! Boost our Google Rating:</span>
+              </div>
+              <p style={{ fontSize: '0.78rem', color: '#15803d', marginBottom: '0.85rem', lineHeight: 1.4 }}>
+                We generated a ready-to-post compliment for you. Copy and post it on our Google Maps profile with 1 tap:
+              </p>
+
+              <textarea
+                value={feedbackText}
+                onChange={(e) => setFeedbackText(e.target.value)}
+                rows={3}
+                style={{
+                  width: '100%',
+                  padding: '0.65rem 0.85rem',
+                  borderRadius: '10px',
+                  border: '1px solid #86efac',
+                  fontSize: '0.8rem',
+                  backgroundColor: '#ffffff',
+                  color: '#0f172a',
+                  outline: 'none',
+                  resize: 'none',
+                  marginBottom: '0.85rem',
+                }}
+              />
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <button
+                  onClick={handleCopyAndOpenGoogleReview}
+                  style={{
+                    backgroundColor: '#16a34a',
+                    color: '#ffffff',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    fontSize: '0.85rem',
+                    fontWeight: 800,
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    boxShadow: '0 4px 10px rgba(22, 163, 74, 0.3)',
+                  }}
+                >
+                  <ExternalLink size={16} />
+                  <span>⭐ Post on Google Reviews (Copy + Open)</span>
+                </button>
+
+                {copiedReview && (
+                  <div style={{ textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: '#166534', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+                    <Check size={14} />
+                    <span>Compliment copied to clipboard! Paste it on Google Maps.</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ⚠️ 1–3 Stars Flow: Private Manager Alert */}
+          {rating > 0 && rating <= 3 && (
+            <div
+              className="animate-fade-in"
+              style={{
+                backgroundColor: '#fffbeb',
+                borderRadius: '16px',
+                border: '1px solid #fde68a',
+                padding: '1.25rem',
+                textAlign: 'left',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#92400e', fontWeight: 800, fontSize: '0.9rem', marginBottom: '0.35rem' }}>
+                <AlertTriangle size={16} />
+                <span>Tell the Restaurant Manager Privately:</span>
+              </div>
+              <p style={{ fontSize: '0.78rem', color: '#b45309', marginBottom: '0.85rem', lineHeight: 1.4 }}>
+                We're deeply sorry your experience wasn't flawless. Tell us what went wrong so we can make it right immediately:
+              </p>
+
+              {feedbackSubmitted ? (
+                <div
+                  style={{
+                    backgroundColor: '#ffffff',
+                    borderRadius: '10px',
+                    padding: '1rem',
+                    border: '1px solid #fde68a',
+                    textAlign: 'center',
+                    color: '#166534',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                  }}
+                >
+                  ✓ Manager on duty has been alerted with your table note!
+                </div>
+              ) : (
+                <form onSubmit={handleSubmitPrivateFeedback} style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                  <textarea
+                    placeholder="Tell us what we can improve (food taste, service speed, cleanliness)..."
+                    value={feedbackText}
+                    onChange={(e) => setFeedbackText(e.target.value)}
+                    rows={3}
+                    style={{
+                      width: '100%',
+                      padding: '0.65rem 0.85rem',
+                      borderRadius: '10px',
+                      border: '1px solid #fcd34d',
+                      fontSize: '0.8rem',
+                      backgroundColor: '#ffffff',
+                      outline: 'none',
+                      resize: 'none',
+                    }}
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={submittingFeedback}
+                    style={{
+                      backgroundColor: '#d97706',
+                      color: '#ffffff',
+                      padding: '0.65rem',
+                      borderRadius: '10px',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {submittingFeedback ? 'Alerting Manager...' : 'Send Private Alert to Manager'}
+                  </button>
+                </form>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
