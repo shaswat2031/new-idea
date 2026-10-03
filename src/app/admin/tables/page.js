@@ -74,9 +74,9 @@ export default function AdminTablesPage() {
 
   // Determine dynamic table state
   const getTableState = (tableNumber) => {
-    // Find active orders for this table
+    // Find active orders for this table (excluding completed and cancelled)
     const tableOrders = orders.filter(
-      (o) => String(o.tableNumber) === String(tableNumber) && o.orderStatus !== 'cancelled'
+      (o) => String(o.tableNumber) === String(tableNumber) && o.orderStatus !== 'cancelled' && o.orderStatus !== 'completed'
     );
 
     // Sort newest first
@@ -127,6 +127,19 @@ export default function AdminTablesPage() {
       badgeText: '🟢 Available / Ready',
       order: null,
     };
+  };
+
+  const handleVacateTable = async (orderId) => {
+    try {
+      await fetch(`/api/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderStatus: 'completed' }),
+      });
+      fetchData();
+    } catch (e) {
+      console.error('Failed to vacate table:', e);
+    }
   };
 
   const handleAddTable = async (e) => {
@@ -461,6 +474,26 @@ export default function AdminTablesPage() {
                       >
                         Table is vacant &amp; ready for walk-in guests.
                       </div>
+                    )}
+
+                    {/* Clear / Vacate Table Quick Action */}
+                    {order && (state.status === 'bill_ready' || state.status === 'served') && (
+                      <button
+                        onClick={() => handleVacateTable(order._id)}
+                        className="btn-primary"
+                        style={{
+                          padding: '0.5rem',
+                          fontSize: '0.8rem',
+                          backgroundColor: '#16a34a',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '0.4rem',
+                        }}
+                      >
+                        <CheckCircle2 size={15} />
+                        <span>Mark Clean &amp; Vacant</span>
+                      </button>
                     )}
 
                     {/* Action Buttons */}

@@ -95,6 +95,7 @@ export default function AdminOrdersPage() {
     { key: 'preparing', label: 'Preparing' },
     { key: 'ready', label: 'Ready' },
     { key: 'served', label: 'Served' },
+    { key: 'completed', label: 'Completed' },
     { key: 'cancelled', label: 'Cancelled' },
   ];
 
@@ -495,8 +496,24 @@ export default function AdminOrdersPage() {
                   )}
 
                   {ord.orderStatus === 'served' && (
+                    <button
+                      onClick={() => handleUpdateStatus(ord._id, 'completed')}
+                      className="btn-primary"
+                      style={{
+                        flex: 1,
+                        padding: '0.5rem',
+                        backgroundColor: '#16a34a',
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                      }}
+                    >
+                      Clear &amp; Free Table #{ord.tableNumber} ✓
+                    </button>
+                  )}
+
+                  {ord.orderStatus === 'completed' && (
                     <div style={{ flex: 1, textAlign: 'center', fontSize: '0.8rem', fontWeight: 700, color: '#16a34a' }}>
-                      Order Completed ✓
+                      Order Closed &amp; Table Vacated ✓
                     </div>
                   )}
 
