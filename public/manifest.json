@@ -1,0 +1,50 @@
+{
+  "name": "Saffron & Spice Bistro — QR Table Ordering",
+  "short_name": "Saffron & Spice",
+  "description": "Scan table QR code, browse handcrafted menu, customize food notes, and order directly from your seat.",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#ea580c",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["food", "restaurants", "shopping", "lifestyle"],
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dine-In Digital Menu",
+      "short_name": "Table Menu",
+      "description": "Open restaurant dine-in menu",
+      "url": "/menu?table=1",
+      "icons": [{ "src": "/logo.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Kitchen Display (KDS)",
+      "short_name": "Kitchen",
+      "description": "Chef live order display system",
+      "url": "/admin/kitchen",
+      "icons": [{ "src": "/logo.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Staff Admin Portal",
+      "short_name": "Admin",
+      "description": "Restaurant operations and billing",
+      "url": "/admin/login",
+      "icons": [{ "src": "/logo.svg", "sizes": "192x192" }]
+    }
+  ]
+}

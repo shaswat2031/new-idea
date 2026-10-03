@@ -1,0 +1,528 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #ea580c;
+  --primary-hover: #c2410c;
+  --primary-light: #fff7ed;
+  --primary-glow: rgba(234, 88, 12, 0.25);
+  
+  --secondary: #d97706;
+  --accent: #e11d48;
+  
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-muted: #f1f5f9;
+  
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  
+  --border: #e2e8f0;
+  --border-focus: #ea580c;
+  
+  --veg-color: #16a34a;
+  --veg-bg: #f0fdf4;
+  --nonveg-color: #dc2626;
+  --nonveg-bg: #fef2f2;
+  --egg-color: #d97706;
+  --egg-bg: #fffbeb;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-glow: 0 10px 25px -5px rgba(234, 88, 12, 0.3);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+/* Typography styles */
+.font-display {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-sans {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.88);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+}
+
+/* Badges & Indicators */
+.diet-badge-veg {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--veg-color);
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+.diet-badge-veg::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: var(--veg-color);
+  border-radius: 50%;
+}
+
+.diet-badge-nonveg {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--nonveg-color);
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+.diet-badge-nonveg::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 8px solid var(--nonveg-color);
+}
+
+.diet-badge-egg {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--egg-color);
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+.diet-badge-egg::after {
+  content: '';
+  width: 7px;
+  height: 9px;
+  background-color: var(--egg-color);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+
+/* Animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(234, 88, 12, 0);
+  }
+}
+
+.pulse-glow {
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes laserScan {
+  0% {
+    top: 0%;
+    opacity: 0.8;
+  }
+  50% {
+    top: 100%;
+    opacity: 1;
+  }
+  100% {
+    top: 0%;
+    opacity: 0.8;
+  }
+}
+
+.laser-scanner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #ea580c, #f97316, transparent);
+  box-shadow: 0 0 12px #ea580c, 0 0 20px #f97316;
+  animation: laserScan 2.2s ease-in-out infinite;
+  z-index: 10;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* Mobile First Layout Utilities */
+.container-custom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.menu-container {
+  max-width: 680px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #ffffff;
+  box-shadow: 0 0 40px rgba(0,0,0,0.06);
+  position: relative;
+  padding-bottom: 90px;
+}
+
+/* Sticky Category Navigation */
+.sticky-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.96);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+}
+
+.tab-pill {
+  white-space: nowrap;
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  background: var(--bg-muted);
+  color: var(--text-muted);
+  border: 1px solid transparent;
+}
+.tab-pill:hover {
+  background: #e2e8f0;
+  color: var(--text-main);
+}
+.tab-pill.active {
+  background: var(--text-main);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+}
+
+/* Button variants */
+/* Modern Luxury Button System */
+@keyframes buttonShimmer {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-15deg);
+  }
+}
+
+@keyframes pulseGlowRing {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.5), 0 10px 25px -4px rgba(234, 88, 12, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(234, 88, 12, 0), 0 14px 30px -4px rgba(234, 88, 12, 0.6);
+  }
+}
+
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+  color: #ffffff;
+  padding: 0.8rem 1.6rem;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 20px -4px rgba(234, 88, 12, 0.45), 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  letter-spacing: 0.01em;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: translateX(-100%) skewX(-15deg);
+  transition: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #fb923c 0%, #ea580c 50%, #9a3412 100%);
+  transform: translateY(-2.5px) scale(1.02);
+  box-shadow: 0 14px 28px -4px rgba(234, 88, 12, 0.55), 0 0 0 2px rgba(254, 215, 170, 0.6);
+}
+
+.btn-primary:hover::before {
+  animation: buttonShimmer 0.75s ease-in-out;
+}
+
+.btn-primary:active {
+  transform: translateY(0.5px) scale(0.98);
+  box-shadow: 0 4px 10px rgba(234, 88, 12, 0.3);
+}
+
+.btn-glow {
+  animation: pulseGlowRing 2.4s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.btn-secondary {
+  position: relative;
+  background: #ffffff;
+  color: #0f172a;
+  border: 1.5px solid #e2e8f0;
+  padding: 0.8rem 1.4rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #ea580c;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px -4px rgba(15, 23, 42, 0.08);
+}
+
+.btn-secondary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-dark {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #ffffff;
+  border: 1px solid #334155;
+  padding: 0.8rem 1.4rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+}
+
+.btn-dark:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.35);
+  border-color: #ea580c;
+}
+
+/* Tactile Menu Item ADD Button */
+.btn-add-dish {
+  background: #ffffff;
+  color: #ea580c;
+  border: 1.5px solid #ea580c;
+  padding: 0.4rem 1.15rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.15);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+}
+
+.btn-add-dish:hover {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  color: #ffffff;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 14px rgba(234, 88, 12, 0.35);
+}
+
+.btn-add-dish:active {
+  transform: scale(0.95);
+}
+
+/* Quantity Button Control */
+.qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  background: #fff7ed;
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.15);
+  transition: all 0.2s ease;
+}
+.qty-stepper:hover {
+  border-color: #ea580c;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+}
+.qty-stepper button {
+  padding: 0.4rem 0.75rem;
+  color: #ea580c;
+  font-weight: 800;
+  font-size: 1.05rem;
+  transition: all 0.15s ease;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qty-stepper button:hover {
+  background: #ea580c;
+  color: #ffffff;
+}
+.qty-stepper button:active {
+  transform: scale(0.9);
+}
+.qty-stepper span {
+  padding: 0 0.55rem;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #0f172a;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* 3D Realistic Table Stand Card Mockup */
+.table-tent-stand {
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  border-radius: 20px;
+  padding: 1.5rem;
+  border: 2px solid rgba(234, 88, 12, 0.2);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  position: relative;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.table-tent-stand:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 50px -15px rgba(234, 88, 12, 0.2);
+}
+
+.table-tent-base {
+  height: 14px;
+  background: linear-gradient(180deg, #334155 0%, #0f172a 100%);
+  border-radius: 0 0 12px 12px;
+  margin: 0.5rem -1rem -0.5rem -1rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Table tent card print styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .printable-area, .printable-area * {
+    visibility: visible;
+  }
+  .printable-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* PWA Slide Up Notification */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+

@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="60%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <!-- Warm Flame / Saffron Gradient -->
+    <linearGradient id="saffronGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="45%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#c2410c"/>
+    </linearGradient>
+
+    <!-- Luxury Gold Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="40%" stop-color="#facc15"/>
+      <stop offset="80%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#ca8a04"/>
+    </linearGradient>
+
+    <!-- Shiny Chrome Highlight -->
+    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Glow Drop Shadows -->
+    <filter id="goldGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="14" flood-color="#f59e0b" flood-opacity="0.45"/>
+    </filter>
+    <filter id="fireGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#ea580c" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- App Rounded Container (Apple & Android Adaptive Mask friendly) -->
+  <rect width="512" height="512" rx="124" fill="url(#bgGrad)"/>
+  
+  <!-- Outer Gold Rim -->
+  <rect x="18" y="18" width="476" height="476" rx="108" fill="none" stroke="url(#goldGrad)" stroke-width="4" stroke-opacity="0.4"/>
+  <rect x="26" y="26" width="460" height="460" rx="100" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-opacity="0.3" stroke-dasharray="8,6"/>
+
+  <!-- Center Luxury Icon Complex -->
+  <g transform="translate(256, 215)">
+    <!-- Ambient Radial Aura -->
+    <circle cx="0" cy="0" r="130" fill="#ea580c" fill-opacity="0.12" filter="url(#fireGlow)"/>
+
+    <!-- Serving Platter Ring & Base Plate -->
+    <ellipse cx="0" cy="68" rx="146" ry="18" fill="url(#goldGrad)" filter="url(#goldGlow)"/>
+    <ellipse cx="0" cy="66" rx="138" ry="12" fill="#ffffff" fill-opacity="0.85"/>
+    <path d="M -90 76 L 90 76 L 65 92 L -65 92 Z" fill="url(#goldGrad)" opacity="0.9"/>
+    
+    <!-- Majestic Food Cloche Dome -->
+    <path d="M -120 54 C -120 -40 -60 -92 0 -92 C 60 -92 120 -40 120 54 Z" fill="url(#saffronGrad)" filter="url(#fireGlow)"/>
+    
+    <!-- Dome Gloss Reflection -->
+    <path d="M -104 46 C -104 -25 -52 -74 0 -74 C 20 -74 40 -62 50 -48 C 15 -62 -45 -40 -80 32 C -88 48 -96 48 -104 46 Z" fill="url(#shineGrad)"/>
+
+    <!-- Cloche Crown Knob -->
+    <g transform="translate(0, -100)">
+      <circle cx="0" cy="0" r="16" fill="url(#goldGrad)" filter="url(#goldGlow)"/>
+      <circle cx="-4" cy="-4" r="5" fill="#ffffff" fill-opacity="0.8"/>
+      <rect x="-8" y="10" width="16" height="8" rx="3" fill="url(#goldGrad)"/>
+    </g>
+
+    <!-- Fork & Spoon Crest inside Cloche -->
+    <g transform="translate(0, -5)" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Fork -->
+      <path d="M -22 -22 L -22 -6 C -22 4 -12 8 -12 16 L -12 36" fill="none"/>
+      <line x1="-28" y1="-22" x2="-28" y2="-12"/>
+      <line x1="-16" y1="-22" x2="-16" y2="-12"/>
+      
+      <!-- Spoon -->
+      <path d="M 22 -22 C 14 -22 14 -4 22 2 C 22 8 16 12 16 36" fill="none"/>
+      <ellipse cx="22" cy="-14" rx="7" ry="10" fill="#ffffff" stroke="none"/>
+    </g>
+
+    <!-- Floating Flavor Aroma Steam / Flame Sparkles -->
+    <path d="M -60 -70 Q -50 -105 -65 -125 Q -40 -105 -50 -70 Z" fill="url(#goldGrad)" opacity="0.85"/>
+    <path d="M 60 -70 Q 50 -105 65 -125 Q 40 -105 50 -70 Z" fill="url(#goldGrad)" opacity="0.85"/>
+    <polygon points="0,-130 5,-118 17,-118 8,-110 11,-98 0,-105 -11,-98 -8,-110 -17,-118 -5,-118" fill="url(#goldGrad)" transform="scale(0.8) translate(0, -25)"/>
+  </g>
+
+  <!-- Typography Brand Identity -->
+  <g transform="translate(256, 420)">
+    <!-- Primary Title -->
+    <text x="0" y="0" font-family="'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="34" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="4">
+      SAFFRON &amp; SPICE
+    </text>
+    
+    <!-- Badge Subtitle -->
+    <g transform="translate(0, 32)">
+      <rect x="-115" y="-18" width="230" height="26" rx="13" fill="#ea580c" fill-opacity="0.2" stroke="#ea580c" stroke-width="1.5"/>
+      <text x="0" y="0" font-family="'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="13" font-weight="800" fill="url(#goldGrad)" text-anchor="middle" letter-spacing="5">
+        DIGITAL QR BISTRO
+      </text>
+    </g>
+  </g>
+</svg>
